@@ -48,7 +48,7 @@ Add ex_audit to your list of dependencies:
 ```elixir
 def deps do
   [
-    {:ex_audit, "~> 0.9"}
+    {:ex_audit, "~> 0.10"}
   ]
 end
 ```
@@ -242,6 +242,8 @@ For ecto 3.1, use `{:ex_audit, "~> 0.6"}`
 For ecto 3.1.2 or higher, upgrade ecto to 3.2
 
 For ecto 3.2, use `{:ex_audit, "~> 0.7"}`
+
+For ecto 3.8, use `{:ex_audit, "~> 0.10"}`
 
 ## More
 
