@@ -48,7 +48,7 @@ Add ex_audit to your list of dependencies:
 ```elixir
 def deps do
   [
-    {:ex_audit, "~> 0.10"}
+    {:ex_audit, "~> 0.10.1"}
   ]
 end
 ```
@@ -84,7 +84,7 @@ config :ex_audit,
   ]
 ```
 
-Optionally, you can tell ExAudit to treat certain structs as primitives and not record internal changes for the 
+Optionally, you can tell ExAudit to treat certain structs as primitives and not record internal changes for the
 struct. Add these under the key `:primitive_structs` in your config. So for example, if you configured `Date` to be treated as a primitive:
 
 ```elixir
@@ -113,6 +113,15 @@ instead of descending into the struct to find the individual part that changed:
 {:changed, %{day: {:changed, {:primitive_change, 1, 18}}}}
 ```
 
+Optionally, you can store the diff changes as a map instead of binary.
+
+```elixir
+config :ex_audit,
+  ecto_repos: [MyApp.Repo],
+  adapter: ExAudit.Adapters.MapDiff
+  ...
+```
+
 ### Version Schema and Migration
 
 You need to copy the migration and the schema module for the versions table. This allows you to add custom fields
@@ -126,7 +135,8 @@ defmodule MyApp.Version do
   import Ecto.Changeset
 
   schema "versions" do
-    # The patch in Erlang External Term Format
+    # By default the patch is in Erlang External Term Format
+    # If the Map Adapter is used, this field must be configured as a `:map` type
     field :patch, ExAudit.Type.Patch
 
     # supports UUID and other types as well
@@ -164,7 +174,8 @@ defmodule MyApp.Migrations.AddVersions do
 
   def change do
     create table(:versions) do
-      # The patch in Erlang External Term Format
+      # By default the patch is in Erlang External Term Format
+      # If the Map Adapter is used, this field must be configured as a `:map` type
       add :patch, :binary
 
       # supports UUID and other types as well
