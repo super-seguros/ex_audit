@@ -1,4 +1,12 @@
 defmodule ExAudit.Tracking do
+  def adapter do
+    Application.get_env(
+      :ex_audit,
+      :adapter,
+      ExAudit.Adapters.ErlangBinaryDiff
+    )
+  end
+
   def find_changes(action, struct_or_changeset, resulting_struct) do
     old =
       case {action, struct_or_changeset} do
@@ -27,7 +35,7 @@ defmodule ExAudit.Tracking do
       assocs = schema.__schema__(:associations)
 
       patch =
-        ExAudit.Diff.diff(
+        adapter().diff(
           ExAudit.Tracker.map_struct(old) |> Map.drop(assocs),
           ExAudit.Tracker.map_struct(new) |> Map.drop(assocs)
         )
